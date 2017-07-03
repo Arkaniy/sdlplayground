@@ -4,11 +4,10 @@
 #include "gfxengine/gfxengine.h"
 #include "gfxengine/resourcepreloadholder.h"
 
-#include "core/container.h"
+#include "core/entity.h"
 #include "core/scene.h"
 
-#include "core/components/sprite.h"
-#include "core/components/transform.h"
+#include "entities/picture.h"
 
 int main() {
     auto& gfxEngine = GfxEngine::getInstance();
@@ -18,30 +17,18 @@ int main() {
     resourcePreloadHolder.addImage("img.jpg", "bg");
     resourcePreloadHolder.addImage("rb.png", "bg1");
 
-    Scene scene;
-
-    Container container;
-
-    Sprite sprite(container, "bg");
-    Transform transform(container, 0, 0, 480, 320);
-
-    Container container1;
-
-    Sprite sprite1(container1, "bg1");
-    Transform transform1(container1, 100, 100, 480, 320);
-
-    container.addComponent(std::make_shared<Sprite>(sprite));
-    container.addComponent(std::make_shared<Transform>(transform));
-
-    container1.addComponent(std::make_shared<Sprite>(sprite1));
-    container1.addComponent(std::make_shared<Transform>(transform1));
-
     gfxEngine.loadResources(resourcePreloadHolder);
 
-    scene.registerEntity(std::make_shared<Container>(container));
-    scene.registerEntity(std::make_shared<Container>(container1));
+    Scene scene;
+
+
+    Picture p1("bg", scene);
+    p1.setTransform(100,100, 300, 300);
+    scene.registerEntity(std::make_shared<Picture>(p1));
+
+    Picture p("bg1", scene, &p1);
+    p.setTransform(0,0, 200, 200);
+    scene.registerEntity(std::make_shared<Picture>(p));
 
     scene.run();
-
-    gfxEngine.free();
 }
